@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">HypHope</string>
+    <string name="action_settings">Settings</string>
+    <string name="app_uid">
+b3829ef545145bfd6bf5a78c320bdf536eef5e0b76a5999b5d3035a2745a9116
+</string>
+    <string name="app_secret">
+cfbe19c77915440fa64da11e4e89212d27a4d3f931329acd513b12f74dbe5b7f
+</string>
+    <string name="title_activity_try_first">TryFirstActivity</string>
+</resources>

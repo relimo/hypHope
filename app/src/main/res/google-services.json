@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "114552533204",
+    "firebase_url": "https://hyphope-32061.firebaseio.com",
+    "project_id": "hyphope-32061",
+    "storage_bucket": "hyphope-32061.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:114552533204:android:a6896a1f5d46ee5e",
+        "android_client_info": {
+          "package_name": "com.example.dr.hyphope"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "114552533204-qasb1ab5rhubpqfsthcifa7hlojp1a9r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCePD94KVt6LIaT-CEzzjyFyigteDzgNDA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
