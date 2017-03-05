@@ -44,7 +44,7 @@ public class DataActivity extends AppCompatActivity {
                 //TODO: insert 00:10 instead of this hour
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.HOUR_OF_DAY, 13);
-                calendar.set(Calendar.MINUTE, 13);
+                calendar.set(Calendar.MINUTE,16);
                 calendar.set(Calendar.SECOND, 0);
 
                 //set that timer as a RTC to alarm manager object

@@ -22,31 +22,15 @@ public class AlarmReceiverData extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-
-//        Calendar now = Calendar.getInstance();
-//
-//        now.add(Calendar.DATE,-1);//we want to get data of the last full day
-//        String day=now.get(Calendar.DAY_OF_MONTH)+"";
-//        String month=now.get(Calendar.MONTH)+"";
-//        Log.v("Alarm Receiver",month);
-//        String year=now.get(Calendar.YEAR)+"";
-//        Log.v("Alarm Receiver","date="+year+"-"+month+"-"+day);
-//        Log.v("Alarm Receiver","message");//works at the requested time
-
-
-
-
-
         Thread thread=new Thread(new Runnable() {
-
-
 
                         @Override
                         public void run() {
+
                             Calendar now = Calendar.getInstance();
                             now.add(Calendar.DATE,-1);
                             String day=(now.get(Calendar.DAY_OF_MONTH))+"";//we want to get data of the last full day
-                            String month=(now.get(Calendar.MONTH)+1)+"";
+                            String month=(now.get(Calendar.MONTH)+1)+"";//January is 0 so there is a need to +1
                             String year=now.get(Calendar.YEAR)+"";
                             Log.v("Alarm Receiver","now: date="+year+"-"+month+"-"+day);
 
@@ -54,7 +38,8 @@ public class AlarmReceiverData extends BroadcastReceiver {
                             try {
                                 OkHttpClient client = new OkHttpClient();
                                 Request request = new Request.Builder()
-//                                        .url("https://wapi.theneura.com/v1/users/profile/daily_summary?date=2017-2-24")// we get in this date: {"status":"success","timestamp":1488283626,"data":null}
+//
+//                                        .url("https://wapi.theneura.com/v1/users/profile/daily_summary?date=2017-2-26")// we get in this date: {"status":"success","timestamp":1488283626,"data":null}
                                         .url("https://wapi.theneura.com/v1/users/profile/daily_summary?date="+year+"-"+month+"-"+day)
                                         .get()
                                         .addHeader("authorization", "Bearer 66e5d374e2bc3cf0cc6285095f82faf45a90354fa05ad08133a4853304cc1024")
@@ -73,15 +58,35 @@ public class AlarmReceiverData extends BroadcastReceiver {
 
                                     Log.d("Run", obj.toString());
                                     Log.d("Run ", obj.getString("status"));
+                                    String jsonDataForNull=obj.getString("data");
 
-                                    if(obj.getString("data").equals(null)) {
+                                    if(jsonDataForNull.equals("null")) {
                                         Log.d("Run ", "data is NULL");
                                         return;
+                                    }else {
+                                        Log.d("Run ", "data is NOT NULL");
+
+//                                        "sleepData": {
+//                                            "length": 693,
+//                                                    "bedTime": "23:21",
+//                                                    "wakeUpTime": "10:54"
+//                                        },
+                                        JSONObject jsonData=  new JSONObject(obj.getString("data")) ;//if the data is not null so take the data as json object
+                                        JSONObject jsonsleepData=  new JSONObject(jsonData.getString("sleepData")) ;//{"length":646,"bedTime":"22:01","wakeUpTime":"08:47"}
+                                        Log.d("Run sleepdata: ", jsonsleepData.toString());
+//                                        JSONObject jsonsleepDataLength=  new JSONObject(jsonsleepData.getString("length")) ;
+//                                        JSONObject jsonsleepData=  new JSONObject(jsonData.getString("sleepData")) ;
+                                        String sleepLength=jsonsleepData.getString("length");
+//                                        String sleepLength=jsonData.getJSONObject("sleepData").getString("length");
+                                        Log.d("Run Length: ",sleepLength );//minutes of sleeping
+//                                        Log.d("Run Length: ", jsonsleepDataLength.toString());//minutes of sleeping
+                                        Log.d("Run Length: ", sleepLength);//minutes of sleeping
+//                                        Log.d("Run Wake up time", obj.getString("wakeUpTime"));
                                     }
                                 } catch (Throwable tx) {
                                     Log.e("My App", "Could not parse malformed JSON");
                                 }
-//                                Log.d("activity data ",response.body().string());//{"status":"success","timestamp":1488283626,"data":null}
+
 
                                 Log.v("activity data","try after printing response string");
                             }catch(Exception e){
