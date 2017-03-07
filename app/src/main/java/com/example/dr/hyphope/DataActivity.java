@@ -9,6 +9,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import android.util.Log;
@@ -17,16 +23,30 @@ import android.util.Log;
 //import com.squareup.okhttp.internal.http.Response;
 public class DataActivity extends AppCompatActivity {
     private Button btnGetData;//this button get data about specific date
-
+    private Button btnWriteToFile;
 
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
+    private DalDynamic dalDynamic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data);
+        dalDynamic=new DalDynamic(this);
+        dalDynamic.addRowToTable1("sleepLength");
+        dalDynamic.addRowToTable1("wakeUpTime");
+        btnWriteToFile=(Button)findViewById(R.id.btnWriteToFile);
+        btnWriteToFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                writeToFile();
+            }
+        });
+
+
         btnGetData=(Button)findViewById(R.id.btnGetData);
+
         btnGetData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -43,68 +63,51 @@ public class DataActivity extends AppCompatActivity {
                 //set timer you want alarm to work
                 //TODO: insert 00:10 instead of this hour
                 Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.HOUR_OF_DAY, 13);
-                calendar.set(Calendar.MINUTE,16);
+                calendar.set(Calendar.HOUR_OF_DAY, 11);
+                calendar.set(Calendar.MINUTE,53);
                 calendar.set(Calendar.SECOND, 0);
 
                 //set that timer as a RTC to alarm manager object
                 alarmMgr.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY, alarmIntent);
 
-
-
-
-
-////                code from postman
-//               /* OkHttpClient client = new OkHttpClient();
-//
-//                Request request = new Request.Builder()
-//                        .url("https://wapi.theneura.com/v1/users/profile/daily_summary?date=2017-1-26")
-//                        .get()
-//                        .addHeader("authorization", "Bearer 66e5d374e2bc3cf0cc6285095f82faf45a90354fa05ad08133a4853304cc1024")
-//                        .addHeader("cache-control", "no-cache")
-//                        .addHeader("postman-token", "2f792dd3-e3e4-29e7-7e6e-783ec666fbc5")
-//                        .build();
-//
-//                Response response = client.newCall(request).execute();*/
-//
-//
-//                Log.v("data activity","on click");
-//                //from postman
-//
-//               // okhttp3.OkHttpClient client = new okhttp3.OkHttpClient();
-//
-//
-//                    Thread thread=new Thread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            try {
-//                                OkHttpClient client = new OkHttpClient();
-//                                Request request = new Request.Builder()
-//                                        .url("https://wapi.theneura.com/v1/users/profile/daily_summary?date=2017-2-24")
-//                                        .get()
-//                                        .addHeader("authorization", "Bearer 66e5d374e2bc3cf0cc6285095f82faf45a90354fa05ad08133a4853304cc1024")
-//                                        .addHeader("cache-control", "no-cache")
-//                                        .addHeader("postman-token", "1e5fa65e-f5da-5a38-dd5f-65a182fbee2f")
-//                                        .build();
-//                                Response response = null;
-//                                response = client.newCall(request).execute();
-//                                Log.v("activity data","try after response");
-//                                //TODO//right now the respone is printed in the logcat so- decide what to do with the data
-//
-//                                Log.d("activity data ",response.body().string());
-//                                Log.v("activity data","try after printing response string");
-//                            }catch(Exception e){
-//                                Log.v("activity data","catch of run");
-//                            }
-//                        }//run
-//                    });
-//
-//
-//                thread.start();
-//
-//
             }
         });
 
+
     }
+
+    private void writeToFile(){
+
+        // Find the root of the external storage.
+        // See http://developer.android.com/guide/topics/data/data-  storage.html#filesExternal
+
+        File root = android.os.Environment.getExternalStorageDirectory();
+        Log.v("check external storage","\nExternal file system root: "+root);
+
+
+
+        File dir = new File (root.getAbsolutePath() + "/download");
+        dir.mkdirs();
+        File file = new File(dir, "records.txt");
+
+        try {
+            FileOutputStream f = new FileOutputStream(file);
+            PrintWriter pw = new PrintWriter(f);
+
+            ArrayList<Record> list = dalDynamic.getRecordsList();
+            for (Record i : list)
+                pw.println(i.toString());
+            pw.flush();
+            pw.close();
+            f.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Log.i("write to file", "******* File not found. Did you" +
+                    " add a WRITE_EXTERNAL_STORAGE permission to the   manifest?");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.i("write to file","\n\nFile written to "+file);
+    }
+
 }

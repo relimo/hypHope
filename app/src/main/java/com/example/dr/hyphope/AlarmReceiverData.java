@@ -9,7 +9,9 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -19,9 +21,10 @@ import okhttp3.Response;
  * .
  */
 public class AlarmReceiverData extends BroadcastReceiver {
+    private DalDynamic dalDynamic;
     @Override
     public void onReceive(Context context, Intent intent) {
-
+        dalDynamic=new DalDynamic(context);
         Thread thread=new Thread(new Runnable() {
 
                         @Override
@@ -74,14 +77,28 @@ public class AlarmReceiverData extends BroadcastReceiver {
                                         JSONObject jsonData=  new JSONObject(obj.getString("data")) ;//if the data is not null so take the data as json object
                                         JSONObject jsonsleepData=  new JSONObject(jsonData.getString("sleepData")) ;//{"length":646,"bedTime":"22:01","wakeUpTime":"08:47"}
                                         Log.d("Run sleepdata: ", jsonsleepData.toString());
-//                                        JSONObject jsonsleepDataLength=  new JSONObject(jsonsleepData.getString("length")) ;
-//                                        JSONObject jsonsleepData=  new JSONObject(jsonData.getString("sleepData")) ;
                                         String sleepLength=jsonsleepData.getString("length");
-//                                        String sleepLength=jsonData.getJSONObject("sleepData").getString("length");
                                         Log.d("Run Length: ",sleepLength );//minutes of sleeping
 //                                        Log.d("Run Length: ", jsonsleepDataLength.toString());//minutes of sleeping
-                                        Log.d("Run Length: ", sleepLength);//minutes of sleeping
 //                                        Log.d("Run Wake up time", obj.getString("wakeUpTime"));
+
+                                        long id=dalDynamic.getRecordIdAccordingToRecordName("sleepLength");
+                                        Log.d("Run id operation: ",id+"" );
+                                        SimpleDateFormat dateFormat=new SimpleDateFormat("dd/MM/yyyy");
+                                        String date=dateFormat.format(now.getTime());
+                                        Log.d("Run id date: ",date+"" );
+                                        SimpleDateFormat dayFormat=new SimpleDateFormat("EEEE", Locale.ENGLISH);//format day in week
+                                        String day_week=dayFormat.format(now.getTime());
+                                        Log.d("Run day week: ",day_week+"" );
+                                        Record record=new Record(date,day_week,id,sleepLength);
+
+                                        long id2=dalDynamic.addRowToTable2(record);
+                                        Log.d("Run id table 2: ",id2+"");
+
+//
+//                                        dal.addRowToTable2(calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE),date,day_week,idOperation);
+
+
                                     }
                                 } catch (Throwable tx) {
                                     Log.e("My App", "Could not parse malformed JSON");

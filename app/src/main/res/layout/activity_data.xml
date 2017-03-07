@@ -16,4 +16,13 @@
         android:id="@+id/btnGetData"
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="write to file"
+        android:id="@+id/btnWriteToFile"
+        android:layout_below="@+id/btnGetData"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="34dp" />
 </RelativeLayout>
