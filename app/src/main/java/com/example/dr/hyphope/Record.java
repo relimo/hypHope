@@ -60,7 +60,7 @@ public class Record {
         return dayInWeek;
     }
     public String toString(){
-        return id+" "+date+" "+dayInWeek+" "+getHour()+":"+getMinute()+" "+getIdOperation()+"~";
+        return id+" "+date+" "+dayInWeek+" "+getHour()+":"+getMinute()+"operation "+getIdOperation()+"value "+value;
     }
 
     public String getValue() {

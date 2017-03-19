@@ -21,13 +21,19 @@ public class DBHelperDynamic extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        //TODO: delere it!!!
+        db.execSQL("DROP TABLE IF EXIST " + ContractDynamic.TABLE_NAME_1);
+        Log.v("on///create","after drop table");
         //creating the first table - the table which contains data of the types of the events
         db.execSQL(
                 "CREATE TABLE " + ContractDynamic.TABLE_NAME_1 + " ( " +
                         ContractDynamic.COLUMN_ID_1+ " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        ContractDynamic.COLUMN_NAME_1 + " TEXT " +
+                        ContractDynamic.COLUMN_NAME_1 + " TEXT, UNIQUE (" +ContractDynamic.COLUMN_NAME_1+") " +
                         ");"
         );
+
+
+
         Log.v(TAG, "after create the first table");
         //creating the second table that contains the records
         db.execSQL(

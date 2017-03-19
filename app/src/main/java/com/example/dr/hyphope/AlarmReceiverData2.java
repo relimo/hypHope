@@ -3,8 +3,9 @@ package com.example.dr.hyphope;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -17,17 +18,12 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * This class saves in DB data of walking
+ * this class saves  sleep data of the last day in DB
  */
-public class AlarmReceiverData extends BroadcastReceiver {
+public class AlarmReceiverData2 extends BroadcastReceiver {
     private DalDynamic dalDynamic;
-    public SharedPreferences sp;
-    public SharedPreferences .Editor editor;
     @Override
-
-
     public void onReceive(Context context, Intent intent) {
-        sp = context.getSharedPreferences("pref_avg", Context.MODE_PRIVATE);
         dalDynamic=new DalDynamic(context);
         Thread thread=new Thread(new Runnable() {
 
@@ -35,8 +31,7 @@ public class AlarmReceiverData extends BroadcastReceiver {
                         public void run() {
 
                             Calendar now = Calendar.getInstance();
-                            //TODO: the yesterday
-//                            now.add(Calendar.DATE,-1);
+                            now.add(Calendar.DATE,-1);
                             String day=(now.get(Calendar.DAY_OF_MONTH))+"";//we want to get data of the last full day
                             String month=(now.get(Calendar.MONTH)+1)+"";//January is 0 so there is a need to +1
                             String year=now.get(Calendar.YEAR)+"";
@@ -74,14 +69,20 @@ public class AlarmReceiverData extends BroadcastReceiver {
                                     }else {
                                         Log.d("Run ", "data is NOT NULL");
 
+//                                        "sleepData": {
+//                                            "length": 693,
+//                                                    "bedTime": "23:21",
+//                                                    "wakeUpTime": "10:54"
+//                                        },
                                         JSONObject jsonData=  new JSONObject(obj.getString("data")) ;//if the data is not null so take the data as json object
-                                     //   JSONObject jsonsleepData=  new JSONObject(jsonData.getString("sleepData")) ;//{"length":646,"bedTime":"22:01","wakeUpTime":"08:47"}
-                                       // Log.d("Run sleepdata: ", jsonsleepData.toString());
-                                        String walkingLength=jsonData.getString("minutesWalk");
-                                        Log.d("Run walkingLength: ",walkingLength );//minutes of walking
-//
+                                        JSONObject jsonsleepData=  new JSONObject(jsonData.getString("sleepData")) ;//{"length":646,"bedTime":"22:01","wakeUpTime":"08:47"}
+                                        Log.d("Run sleepdata: ", jsonsleepData.toString());
+                                        String sleepLength=jsonsleepData.getString("length");
+                                        Log.d("Run Length: ",sleepLength );//minutes of sleeping
+//                                        Log.d("Run Length: ", jsonsleepDataLength.toString());//minutes of sleeping
+//                                        Log.d("Run Wake up time", obj.getString("wakeUpTime"));
 
-                                        long id=dalDynamic.getRecordIdAccordingToRecordName("minutesWalk");
+                                        long id=dalDynamic.getRecordIdAccordingToRecordName("sleepLength");
                                         Log.d("Run id operation: ",id+"" );
                                         SimpleDateFormat dateFormat=new SimpleDateFormat("dd/MM/yyyy");
                                         String date=dateFormat.format(now.getTime());
@@ -89,13 +90,11 @@ public class AlarmReceiverData extends BroadcastReceiver {
                                         SimpleDateFormat dayFormat=new SimpleDateFormat("EEEE", Locale.ENGLISH);//format day in week
                                         String day_week=dayFormat.format(now.getTime());
                                         Log.d("Run day week: ",day_week+"" );
-                                        Record record=new Record(date,day_week,id,walkingLength);
-                                        //insert the walking data of yesterday to the DB
+                                        Record record=new Record(date,day_week,id,sleepLength);
+
                                         long id2=dalDynamic.addRowToTable2(record);
                                         Log.d("Run id table 2: ",id2+"");
-                                        Log.v("before statistics","before method");
-                                        statistics(walkingLength);
-                                        Log.v("after statistics","done");
+
 //
 //                                        dal.addRowToTable2(calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE),date,day_week,idOperation);
 
@@ -117,35 +116,6 @@ public class AlarmReceiverData extends BroadcastReceiver {
                 thread.start();
 
 
-    }//on receive
-
-    //this method gets the walking length in minutes of the current day and checks if there is a deviation
-    private void statistics(String walkingLength){
-        final double TOLLERANCE=0.2;
-
-
-
-        int walkingToday=Integer.parseInt(walkingLength);
-        //the initialization of sp is in OnRecieve()
-        double avgTillToday=sp.getFloat("avg",walkingToday);
-        int learnedDaysTillToday=sp.getInt("days", 0);
-        Log.v("statistics: days",learnedDaysTillToday+"");
-        Log.v("statistics: avg",avgTillToday+"");
-        Log.v("statistics: walking",walkingToday+"");
-        if(walkingToday<avgTillToday*(1-TOLLERANCE))
-            //           TODO: Notification: "you walked today less" or something else
-
-            Log.v("statistics","you should go - you are under the avg");
-        else
-            Log.v("statistics"," you are not under the avg!!!");
-
-        Log.v("statistics","middle");
-        //update the days (add +1)11
-        editor.putInt("days",learnedDaysTillToday+1);
-        //update the avg
-        float newAvg=(float) (avgTillToday*(learnedDaysTillToday)+walkingToday)/(learnedDaysTillToday+1);
-        editor.putFloat("avg",newAvg);
-        Log.v("statistics","end");
     }
 
 

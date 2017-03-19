@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created on 17/07/2016.
@@ -41,7 +43,7 @@ public class DalDynamic {
     }//addRowToTable1
 
     public long addRowToTable2(Record record){
-        Log.v(TAG,"add row to table 2!!!");
+        Log.v(TAG,"add row to table 2");
         //get DB
         SQLiteDatabase db = helper.getWritableDatabase();
         //values to save
@@ -165,6 +167,34 @@ public class DalDynamic {
     }
 
 
+    public Map<Long,String> getTable1(){
+        Map<Long,String> map=new TreeMap<>();
+        //get DB
+        SQLiteDatabase db = helper.getReadableDatabase();
+        //get cursor
+        Cursor c;
+        c = db.rawQuery("SELECT * " +" FROM " + ContractDynamic.TABLE_NAME_1, null);
+        if (c != null) {
+            if (c.moveToFirst()) {
+                do {
+             //  get the index of the column
+                    int columnIndex = c.getColumnIndex(ContractDynamic.COLUMN_ID_1);
+                    //get the suitable questionnaire
+                    long opId = c.getLong(columnIndex);
+                    //  get the index of the column
+                    columnIndex = c.getColumnIndex(ContractDynamic.COLUMN_NAME_1);
+                    //get the suitable questionnaire
+                    String opName = c.getString(columnIndex);
+                    map.put(opId,opName);
+                }while(c.moveToNext());
+                c.close();
+                db.close();
+
+            }
+            return map;
+        }
+        return null;
+    }
 //
 //    public List<Long> getMedicineIdFromTable2List() {
 //        List<Long> idList= new ArrayList<Long>();
