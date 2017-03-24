@@ -19,7 +19,8 @@ public class ContractDynamic implements BaseColumns {
     public static final String COLUMN_DATE_2 = "date";
     public static final String COLUMN_DAY_IN_WEEK_2 = "dayInWeek";
     public static final String COLUMN_EVENT_TYPE_ID_2 = "eventTypeId2";
-    public static final String COLUMN_VALUE = "value";
+    public static final String COLUMN_VALUE_2 = "value";
+    public static final String COLUMN_IS_DEVIATION_2 = "deviation";
 
 
 

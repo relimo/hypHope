@@ -12,11 +12,13 @@ public class Record {
     private String dayInWeek;
     private long idOperation;
     private String value;
+    private int deviation;
 
 
-    public Record(int id,int h,int m,String date,String dateInWeek,long idO,String value){
+    public Record(int id,int h,int m,String date,String dateInWeek,long idO,String value,int variation){
         this(h,m,date,dateInWeek,idO,value);
         this.id=id;
+        this.deviation=variation;
 
     }
     public Record(int h,int m,String date,String dateInWeek,long idO,String value){
@@ -25,6 +27,7 @@ public class Record {
         this.minute=m;
 
 }
+
     public Record(String date,String dateInWeek,long idO,String value){
         //in this constructor time doesn't matter
         this.hour=-1;
@@ -33,6 +36,19 @@ public class Record {
         this.dayInWeek=dateInWeek;
         this.idOperation=idO;
         this.setValue(value);
+        this.deviation=-1;
+    }
+    public Record(String date,String dateInWeek,long idO,String value,int variation){
+        //in this constructor time doesn't matter
+        this.hour=-1;
+        this.minute=-1;
+        this.date=date;
+        this.dayInWeek=dateInWeek;
+        this.idOperation=idO;
+        this.setValue(value);
+        this.setDeviation(variation);
+
+
     }
 
 
@@ -69,5 +85,14 @@ public class Record {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+
+    public int getDeviation() {
+        return deviation;
+    }
+
+    public void setDeviation(int deviation) {
+        this.deviation = deviation;
     }
 }

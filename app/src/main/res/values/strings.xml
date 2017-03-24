@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">HypHope</string>
     <string name="action_settings">Settings</string>
+    <!--nEURA-->
     <string name="app_uid">
 b3829ef545145bfd6bf5a78c320bdf536eef5e0b76a5999b5d3035a2745a9116
 </string>
@@ -8,4 +9,10 @@ b3829ef545145bfd6bf5a78c320bdf536eef5e0b76a5999b5d3035a2745a9116
 cfbe19c77915440fa64da11e4e89212d27a4d3f931329acd513b12f74dbe5b7f
 </string>
     <string name="title_activity_try_first">TryFirstActivity</string>
+
+
+    <!--Recognize dialog-->
+    <string name="rec_dialog_btn_ok">OK</string>
+    <string name="rec_dialog_txt1">NOTICE!</string>
+    <string name="rec_dialog_txt2">you walked today less than other days</string>
 </resources>

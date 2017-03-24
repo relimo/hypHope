@@ -52,6 +52,7 @@ public class DataActivity extends AppCompatActivity {
         dalDynamic.addRowToTable1("sleepLength");
         dalDynamic.addRowToTable1("wakeUpTime");
         dalDynamic.addRowToTable1("minutesWalk");
+        dalDynamic.addRowToTable1("minutesWalkTillEvening");//
         btnWriteToFile=(Button)findViewById(R.id.btnWriteToFile);
         btnWriteToFile.setOnClickListener(
                 new View.OnClickListener() {
@@ -70,7 +71,7 @@ public class DataActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
+/*
                 Log.v("data activity","on click");
                 alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
 
@@ -89,7 +90,10 @@ public class DataActivity extends AppCompatActivity {
 
                 //set that timer as a RTC to alarm manager object
                 alarmMgr.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY, alarmIntent);
-
+*/
+// TODO: 24/03/2017 open the above
+                Intent intent = new Intent(getApplicationContext(),BlankActivity.class);
+                startActivity(intent);
             }
         });
 

@@ -55,7 +55,8 @@ public class DalDynamic {
         values.put(ContractDynamic.COLUMN_DATE_2,record.getDate());
         values.put(ContractDynamic.COLUMN_DAY_IN_WEEK_2,record.getDayInWeek());
         values.put(ContractDynamic.COLUMN_EVENT_TYPE_ID_2,record.getIdOperation());
-        values.put(ContractDynamic.COLUMN_VALUE,record.getValue());
+        values.put(ContractDynamic.COLUMN_VALUE_2,record.getValue());
+        values.put(ContractDynamic.COLUMN_IS_DEVIATION_2,record.getDeviation());
 
 
         Log.v(TAG,values.get(ContractDynamic.COLUMN_HOUR_2).toString());
@@ -63,7 +64,8 @@ public class DalDynamic {
         Log.v(TAG,values.get(ContractDynamic.COLUMN_DATE_2).toString());
         Log.v(TAG,values.get(ContractDynamic.COLUMN_DAY_IN_WEEK_2).toString());
         Log.v(TAG,values.get(ContractDynamic.COLUMN_EVENT_TYPE_ID_2).toString());
-        Log.v(TAG,values.get(ContractDynamic.COLUMN_VALUE).toString());
+        Log.v(TAG,values.get(ContractDynamic.COLUMN_VALUE_2).toString());
+        Log.v(TAG,values.get(ContractDynamic.COLUMN_IS_DEVIATION_2).toString());
 
 
         //save the values
@@ -122,8 +124,9 @@ public class DalDynamic {
                     String day=c.getString(4);
                     long idO=c.getLong(5);//the column of the id_operation
                     String value=c.getString(6);
+                    int deviation=c.getInt(7);
 //                    int id,int h,int m,String date,String dateInWeek,long idO,String value
-                     Record r=new Record(id,h,m,date,day,idO,value);
+                     Record r=new Record(id,h,m,date,day,idO,value,deviation);
                     list.add(r);
 
                 }while(c.moveToNext());
@@ -136,6 +139,30 @@ public class DalDynamic {
         }
         return null;
     }
+
+    //this function gets hour and minute and returns the matched medicine id
+    public int getDeviationAccordingToeventTypeIdAnddate(long id, String date) {
+        //get DB
+        SQLiteDatabase db = helper.getReadableDatabase();
+        //get cursor
+        Cursor c;
+        c= db.rawQuery("SELECT "+ContractDynamic.COLUMN_IS_DEVIATION_2+ " FROM "+ ContractDynamic.TABLE_NAME_2
+                + " WHERE " + ContractDynamic.COLUMN_EVENT_TYPE_ID_2 + "=" + id + " and "+ ContractDynamic.COLUMN_DATE_2+ "=" + "'"+date+"'", null);
+        if (c != null) {
+            if (c.moveToFirst()) {
+                //get the index of the column
+                int columnIndex = c.getColumnIndex(ContractDynamic.COLUMN_IS_DEVIATION_2);
+                //get the suitable questionnaire
+                int isDevition = c.getInt(columnIndex);
+                c.close();
+                db.close();
+                return isDevition;
+            }
+        }
+        return NOT_EXIST;
+    }
+
+
 
     public long getRecordIdAccordingToRecordName(String name) {
         //get DB

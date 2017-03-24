@@ -1,5 +1,6 @@
 package com.example.dr.hyphope;
 
+import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -21,12 +22,16 @@ import okhttp3.Response;
  */
 public class AlarmReceiverData extends BroadcastReceiver {
     private DalDynamic dalDynamic;
+    private Context context;
+    private Statistics statistics;
     public SharedPreferences sp;
     public SharedPreferences .Editor editor;
     @Override
 
 
     public void onReceive(Context context, Intent intent) {
+        this.context=context;
+        statistics=new Statistics(context);
         sp = context.getSharedPreferences("pref_avg", Context.MODE_PRIVATE);
         dalDynamic=new DalDynamic(context);
         Thread thread=new Thread(new Runnable() {
@@ -81,7 +86,7 @@ public class AlarmReceiverData extends BroadcastReceiver {
                                         Log.d("Run walkingLength: ",walkingLength );//minutes of walking
 //
 
-                                        long id=dalDynamic.getRecordIdAccordingToRecordName("minutesWalk");
+                                        long id=dalDynamic.getRecordIdAccordingToRecordName("minutesWalkTillEvening");
                                         Log.d("Run id operation: ",id+"" );
                                         SimpleDateFormat dateFormat=new SimpleDateFormat("dd/MM/yyyy");
                                         String date=dateFormat.format(now.getTime());
@@ -89,15 +94,15 @@ public class AlarmReceiverData extends BroadcastReceiver {
                                         SimpleDateFormat dayFormat=new SimpleDateFormat("EEEE", Locale.ENGLISH);//format day in week
                                         String day_week=dayFormat.format(now.getTime());
                                         Log.d("Run day week: ",day_week+"" );
-                                        Record record=new Record(date,day_week,id,walkingLength);
-                                        //insert the walking data of yesterday to the DB
+                                        //check if today the user walked less than other days
+                                        int deviation=calculatingDeviation(walkingLength);
+                                        Record record=new Record(date,day_week,id,walkingLength,deviation);
+                                        //insert the walking data of today till evening to the DB
                                         long id2=dalDynamic.addRowToTable2(record);
                                         Log.d("Run id table 2: ",id2+"");
-                                        Log.v("before statistics","before method");
-                                        statistics(walkingLength);
-                                        Log.v("after statistics","done");
-//
-//                                        dal.addRowToTable2(calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE),date,day_week,idOperation);
+                                        //check if there is a need to punish
+                                        statistics.toPunish();
+
 
 
                                     }
@@ -119,11 +124,15 @@ public class AlarmReceiverData extends BroadcastReceiver {
 
     }//on receive
 
-    //this method gets the walking length in minutes of the current day and checks if there is a deviation
-    private void statistics(String walkingLength){
+
+//TODO: put this methos in the class statistics
+    /**
+     * this method gets the walking length in minutes of the current day and checks if there is a deviation
+     * @param walkingLength the minutes of walking till evening
+     * @return 1 there is deviation o/w 0
+     */
+    private int calculatingDeviation(String walkingLength){
         final double TOLLERANCE=0.2;
-
-
 
         int walkingToday=Integer.parseInt(walkingLength);
         //the initialization of sp is in OnRecieve()
@@ -132,20 +141,31 @@ public class AlarmReceiverData extends BroadcastReceiver {
         Log.v("statistics: days",learnedDaysTillToday+"");
         Log.v("statistics: avg",avgTillToday+"");
         Log.v("statistics: walking",walkingToday+"");
-        if(walkingToday<avgTillToday*(1-TOLLERANCE))
-            //           TODO: Notification: "you walked today less" or something else
-
+        int isDeviation=0;
+//        // TODO: variance
+        if(walkingToday<avgTillToday*(1-TOLLERANCE)) {
             Log.v("statistics","you should go - you are under the avg");
+            isDeviation=1;
+
+            //an activity which open the dialog
+            Intent intent = new Intent(context.getApplicationContext(),BlankActivity.class);
+            context.startActivity(intent);
+        }
+
         else
             Log.v("statistics"," you are not under the avg!!!");
 
+// TODO: if there is a variation 3 days ratzuf make a punishment
         Log.v("statistics","middle");
+
         //update the days (add +1)11
         editor.putInt("days",learnedDaysTillToday+1);
         //update the avg
         float newAvg=(float) (avgTillToday*(learnedDaysTillToday)+walkingToday)/(learnedDaysTillToday+1);
         editor.putFloat("avg",newAvg);
         Log.v("statistics","end");
+
+        return isDeviation;
     }
 
 

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/LL_content_warning"
+        android:layout_marginTop="@dimen/h_et_name">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView3"
+            android:src="@drawable/walking"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/rec_dialog_txt1"
+            android:id="@+id/rec_dialog_txt1"
+            android:gravity="center_horizontal"
+            android:textColor="@color/medumGreen"
+            android:textStyle="bold"
+            android:textSize="@dimen/textsize_of_tv_content"
+            android:layout_marginTop="@dimen/margin_top_main_button"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/rec_dialog_txt2"
+            android:id="@+id/rec_dialog_txt2"
+            android:gravity="center_horizontal"
+            android:textColor="@color/medumGreen"
+            android:textStyle="bold"
+            android:textSize="@dimen/textsize_of_tv_content"
+            android:layout_marginTop="@dimen/margin_top_main_button"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="@dimen/margin_of_tv_header"
+            android:layout_marginRight="@dimen/margin_of_tv_header" />
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/rec_dialog_btn_ok"
+        android:id="@+id/rec_dialog_btn_ok"
+        android:layout_marginTop="@dimen/margin_of_icon_layout"
+        android:layout_below="@id/LL_content_warning"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/bkg_btns_white"
+        android:textColor="@color/darkestGreen"
+        android:textSize="@dimen/text_size_main_button"
+        android:layout_marginBottom="@dimen/margin_of_icon_layout" />
+
+</RelativeLayout>

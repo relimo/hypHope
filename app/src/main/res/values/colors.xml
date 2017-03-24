@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-</resources>
+        <color name="colorPrimary">#3F51B5</color>
+        <color name="colorPrimaryDark">#303F9F</color>
+        <color name="colorSpinnerDelete">#f4ab53</color>
+        <color name="colorAccent">#FF4081</color>
+        <color name="darkBlue">#06557a</color>
+        <color name="orange">#FD9404</color>
+        <color name="white">#ffffff</color>
+        <color name="olive">#C9A918</color>
+        <color name="darkestGreen">#FF2A5620</color>
+        <color name="medumGreen">#3C7D2D</color>
+        <color name="lightGreen">#80AE60</color>
+        <color name="FABcolor">#43b05c</color>
+        <color name="textHint">#bdb9b9</color>
+        <color name="colorBkgReminder">#DBD8D8</color>
+        <color name="text_color_main_button">#000000</color>
+
+        <color name="blockColor">#030000</color>
+
+        <color name="lightestGreen">#d7f0c6</color>
+
+    </resources>
+

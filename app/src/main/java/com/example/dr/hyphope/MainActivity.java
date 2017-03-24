@@ -25,7 +25,7 @@ import com.neura.standalonesdk.util.SDKUtils;
 import java.util.ArrayList;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  {
     private NeuraApiClient mNeuraApiClient;
     private ArrayList<Permission> mPermissions;
     private Button btnStart;

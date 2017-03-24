@@ -21,9 +21,9 @@ public class DBHelperDynamic extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        //TODO: delere it!!!
-        db.execSQL("DROP TABLE IF EXIST " + ContractDynamic.TABLE_NAME_1);
-        Log.v("on///create","after drop table");
+//        //TODO: delere it!!!
+//        db.execSQL("DROP TABLE IF EXIST " + ContractDynamic.TABLE_NAME_1);
+   //     Log.v("on///create","after drop table");
         //creating the first table - the table which contains data of the types of the events
         db.execSQL(
                 "CREATE TABLE " + ContractDynamic.TABLE_NAME_1 + " ( " +
@@ -44,7 +44,8 @@ public class DBHelperDynamic extends SQLiteOpenHelper {
                         ContractDynamic.COLUMN_DATE_2 + " TEXT, " +
                         ContractDynamic.COLUMN_DAY_IN_WEEK_2 + " TEXT, " +
                         ContractDynamic.COLUMN_EVENT_TYPE_ID_2 + " LONG, " +
-                        ContractDynamic.COLUMN_VALUE + " TEXT " +
+                        ContractDynamic.COLUMN_VALUE_2 + " TEXT, " +
+                        ContractDynamic.COLUMN_IS_DEVIATION_2 + " INTEGER " +
 
                         ");"
         );
