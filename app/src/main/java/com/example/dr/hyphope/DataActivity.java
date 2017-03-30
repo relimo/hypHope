@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.nfc.Tag;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,6 +28,9 @@ import android.util.Log;
 public class DataActivity extends AppCompatActivity {
     private Button btnGetData;//this button get data about specific date
     private Button btnWriteToFile;
+    private Button btnSleepData;
+    private Button btnWakeUp;
+
 
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
@@ -53,6 +55,7 @@ public class DataActivity extends AppCompatActivity {
         dalDynamic.addRowToTable1("wakeUpTime");
         dalDynamic.addRowToTable1("minutesWalk");
         dalDynamic.addRowToTable1("minutesWalkTillEvening");//
+
         btnWriteToFile=(Button)findViewById(R.id.btnWriteToFile);
         btnWriteToFile.setOnClickListener(
                 new View.OnClickListener() {
@@ -64,6 +67,67 @@ public class DataActivity extends AppCompatActivity {
             }
         });
 
+        btnSleepData=(Button)findViewById(R.id.btnSleep);
+        btnSleepData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {//func to insert data sleep
+                Log.v("data activity","on sleep click");
+                alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+
+                //Create pending intent & register it to your alarm notifier class
+                // Intent intent = new Intent(getApplicationContext(), AlarmReceiveWakeUp.class);
+                Intent intent = new Intent(getApplicationContext(), AlarmReceiverDataSleep.class);
+//                intent.putExtra("uur", "1e"); // if you want
+                alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+
+                //set timer you want alarm to work
+                //in 01:00 put the data sleep in DB of yesterday
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.HOUR_OF_DAY, 01);
+                calendar.set(Calendar.MINUTE,00);
+                calendar.set(Calendar.SECOND, 0);
+
+                //set that timer as a RTC to alarm manager object
+                alarmMgr.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY, alarmIntent);
+
+
+            }
+        });
+
+        btnWakeUp=(Button)findViewById(R.id.btnWake);
+        btnWakeUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {//func of wakimg up
+                Log.v("data activity","on wake up click");
+                alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+
+                //Create pending intent & register it to your alarm notifier class
+                // Intent intent = new Intent(getApplicationContext(), AlarmReceiveWakeUp.class);
+                Intent intent = new Intent(getApplicationContext(), AlarmReceiveWakeUp.class);
+//                intent.putExtra("uur", "1e"); // if you want
+                alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+
+                //set timer you want alarm to work
+                //get the time from sp to know when to check if the user wake up
+                sp = getSharedPreferences("pref_avg_sleep", Context.MODE_PRIVATE);
+                float time=sp.getFloat("wakeUpTime",7);
+                int []arr=gethour_Minute(time);
+                int hour,minute;
+                hour=arr[0];
+                minute=arr[1];
+                //put this time in the alarm
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.HOUR_OF_DAY, hour);
+                calendar.set(Calendar.MINUTE,minute);
+                calendar.set(Calendar.SECOND, 0);
+
+                //set that timer as a RTC to alarm manager object
+                alarmMgr.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY, alarmIntent);
+
+
+
+            }
+        });
 
         btnGetData=(Button)findViewById(R.id.btnGetData);
 
@@ -71,18 +135,17 @@ public class DataActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-/*
+
                 Log.v("data activity","on click");
                 alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
 
                 //Create pending intent & register it to your alarm notifier class
-               // Intent intent = new Intent(getApplicationContext(), AlarmReceiverData2.class);
-                Intent intent = new Intent(getApplicationContext(), AlarmReceiverData.class);
+               // Intent intent = new Intent(getApplicationContext(), AlarmReceiveWakeUp.class);
+                Intent intent = new Intent(getApplicationContext(), AlarmReceiverDataWalking.class);
 //                intent.putExtra("uur", "1e"); // if you want
                 alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
 
                 //set timer you want alarm to work
-                //TODO: insert 00:10 instead of this hour
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.HOUR_OF_DAY, 14);
                 calendar.set(Calendar.MINUTE,40);
@@ -90,10 +153,8 @@ public class DataActivity extends AppCompatActivity {
 
                 //set that timer as a RTC to alarm manager object
                 alarmMgr.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY, alarmIntent);
-*/
-// TODO: 24/03/2017 open the above
-                Intent intent = new Intent(getApplicationContext(),BlankActivity.class);
-                startActivity(intent);
+
+
             }
         });
 
@@ -199,6 +260,16 @@ public class DataActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+    public int[] gethour_Minute(float time){
+        int timeArr[]=new int[2];
+        int hour=(int)time;
+        timeArr[0]=hour;
+        int minutes=(int)((time-hour)*60);
+        timeArr[1]=minutes;
+        Log.v("time ","time float "+time+" hour "+hour+" minutes "+minutes);
+        return timeArr;
 
     }
 

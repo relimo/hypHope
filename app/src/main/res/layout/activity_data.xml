@@ -25,4 +25,20 @@
         android:layout_below="@+id/btnGetData"
         android:layout_alignParentStart="true"
         android:layout_marginTop="34dp" />
+
+    <Button
+        android:id="@+id/btnSleep"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnGetData"
+        android:layout_alignEnd="@+id/btnGetData"
+        android:layout_marginBottom="48dp"
+        android:text="sleep Data" />
+
+    <Button
+        android:id="@+id/btnWake"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="48dp"
+        android:text="Wake Up" />
 </RelativeLayout>
