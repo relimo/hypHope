@@ -1,5 +1,6 @@
 package com.example.dr.hyphope;
 
+import android.app.WallpaperInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -116,4 +117,48 @@ public class Statistics {
     }
 
 
+    /**
+     * this method gets the walking length in minutes of the current day and checks if there is a deviation
+     * @param walkingLength the minutes of walking till evening
+     * @return 1 there is deviation o/w 0
+     */
+    public int calculatingDeviation(String walkingLength){
+        final double TOLLERANCE=0.2;
+        int walkingToday=Integer.parseInt(walkingLength);
+        //the initialization of sp is in OnRecieve()
+        double avgTillToday=sp.getFloat("avg",walkingToday);
+        int learnedDaysTillToday=sp.getInt("days", 0);
+        double standard_deviation=sp.getFloat("sig",(float)0.001);
+        Log.v("statistics: days",learnedDaysTillToday+"");
+        Log.v("statistics: avg",avgTillToday+"");
+        Log.v("statistics: walking",walkingToday+"");
+        Log.v("statistics: sig",standard_deviation+"");
+        int isDeviation=0;
+        //check if there is a significant deviation (is calculated with avg and standard deviation
+        if(walkingToday<avgTillToday*(1-TOLLERANCE)-standard_deviation) {
+            Log.v("statistics","you should go - you are under the avg");
+            isDeviation=1;
+
+            //an activity which open the dialog
+            Intent intent = new Intent(context.getApplicationContext(),BlankActivity.class);
+            context.startActivity(intent);
+        }
+
+        else
+            Log.v("statistics"," you are not under the avg!!!");
+
+// TODO: if there is a variation 3 days ratzuf make a punishment
+
+
+        //update the days (add +1)11
+        editor.putInt("days",learnedDaysTillToday+1);
+        //update the avg
+        float newAvg=(float) (avgTillToday*(learnedDaysTillToday)+walkingToday)/(learnedDaysTillToday+1);
+        //update the standard deviation
+        double newSig=Math.sqrt(Math.pow(standard_deviation,2)+Math.pow(avgTillToday,2)*(learnedDaysTillToday/(learnedDaysTillToday+1))+ (walkingToday*walkingToday)/(learnedDaysTillToday+1)-newAvg*newAvg);
+        editor.putFloat("avg",newAvg);
+        Log.v("statistics","end");
+
+        return isDeviation;
+    }
 }

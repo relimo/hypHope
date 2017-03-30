@@ -26,6 +26,7 @@ public class AlarmReceiverDataWalking extends BroadcastReceiver {
     private Statistics statistics;
     public SharedPreferences sp;
     public SharedPreferences .Editor editor;
+
     @Override
 
 
@@ -40,8 +41,6 @@ public class AlarmReceiverDataWalking extends BroadcastReceiver {
                         public void run() {
 
                             Calendar now = Calendar.getInstance();
-                            //TODO: the yesterday
-//                            now.add(Calendar.DATE,-1);
                             String day=(now.get(Calendar.DAY_OF_MONTH))+"";//we want to get data of the last full day
                             String month=(now.get(Calendar.MONTH)+1)+"";//January is 0 so there is a need to +1
                             String year=now.get(Calendar.YEAR)+"";
@@ -80,8 +79,7 @@ public class AlarmReceiverDataWalking extends BroadcastReceiver {
                                         Log.d("Run ", "data is NOT NULL");
 
                                         JSONObject jsonData=  new JSONObject(obj.getString("data")) ;//if the data is not null so take the data as json object
-                                     //   JSONObject jsonsleepData=  new JSONObject(jsonData.getString("sleepData")) ;//{"length":646,"bedTime":"22:01","wakeUpTime":"08:47"}
-                                       // Log.d("Run sleepdata: ", jsonsleepData.toString());
+
                                         String walkingLength=jsonData.getString("minutesWalk");
                                         Log.d("Run walkingLength: ",walkingLength );//minutes of walking
 //
@@ -95,7 +93,7 @@ public class AlarmReceiverDataWalking extends BroadcastReceiver {
                                         String day_week=dayFormat.format(now.getTime());
                                         Log.d("Run day week: ",day_week+"" );
                                         //check if today the user walked less than other days
-                                        int deviation=calculatingDeviation(walkingLength);
+                                        int deviation=statistics.calculatingDeviation(walkingLength);
                                         Record record=new Record(date,day_week,id,walkingLength,deviation);
                                         //insert the walking data of today till evening to the DB
                                         long id2=dalDynamic.addRowToTable2(record);
@@ -125,47 +123,7 @@ public class AlarmReceiverDataWalking extends BroadcastReceiver {
     }//on receive
 
 
-//TODO: put this methos in the class statistics
-    /**
-     * this method gets the walking length in minutes of the current day and checks if there is a deviation
-     * @param walkingLength the minutes of walking till evening
-     * @return 1 there is deviation o/w 0
-     */
-    private int calculatingDeviation(String walkingLength){
-        final double TOLLERANCE=0.2;
-        int walkingToday=Integer.parseInt(walkingLength);
-        //the initialization of sp is in OnRecieve()
-        double avgTillToday=sp.getFloat("avg",walkingToday);
-        int learnedDaysTillToday=sp.getInt("days", 0);
-        Log.v("statistics: days",learnedDaysTillToday+"");
-        Log.v("statistics: avg",avgTillToday+"");
-        Log.v("statistics: walking",walkingToday+"");
-        int isDeviation=0;
-//        // TODO: variance
-        if(walkingToday<avgTillToday*(1-TOLLERANCE)) {
-            Log.v("statistics","you should go - you are under the avg");
-            isDeviation=1;
 
-            //an activity which open the dialog
-            Intent intent = new Intent(context.getApplicationContext(),BlankActivity.class);
-            context.startActivity(intent);
-        }
-
-        else
-            Log.v("statistics"," you are not under the avg!!!");
-
-// TODO: if there is a variation 3 days ratzuf make a punishment
-        Log.v("statistics","middle");
-
-        //update the days (add +1)11
-        editor.putInt("days",learnedDaysTillToday+1);
-        //update the avg
-        float newAvg=(float) (avgTillToday*(learnedDaysTillToday)+walkingToday)/(learnedDaysTillToday+1);
-        editor.putFloat("avg",newAvg);
-        Log.v("statistics","end");
-
-        return isDeviation;
-    }
 
 
 }
